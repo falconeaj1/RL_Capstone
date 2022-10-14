@@ -4,7 +4,7 @@ Figure = figure.Figure
 
 class Tetris:
     buffer = 4 # how many rows above actual grid to birth tetrominos
-    n_queue = 4 # how many next tetrominos to show coming up
+    n_queue = 3 # how many next tetrominos to show coming up
     # coordinates of board top left on larger screen
     x = 200
     y = 100
