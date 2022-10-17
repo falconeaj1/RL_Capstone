@@ -1,3 +1,4 @@
+
 import pygame
 import figure
 Figure = figure.Figure
@@ -5,11 +6,12 @@ Figure = figure.Figure
 class Tetris:
     buffer = 4 # how many rows above actual grid to birth tetrominos
     n_queue = 3 # how many next tetrominos to show coming up
+    
+    # THIS SHOULD BE CLEANED UP IN DISPLAY STUFF, tetris doesn't need to know about this
     # coordinates of board top left on larger screen
     x = 200
     y = 100
     
-    fps = 60 # frames per second
     height = 20
     width = 10
     
@@ -38,6 +40,9 @@ class Tetris:
     tet_x = 4
     tet_y = 2
     
+    
+    
+    # CLEAN: TETRIS DOESN'T NEED EXTERNAL DISPLAY INFO
     # coordinates of swap piece with respect to top left of SCREEN
     swap_x = 50
     swap_y = 200
@@ -45,14 +50,10 @@ class Tetris:
     # Queue coordinates top piece
     queue_x = 500
     queue_y = 250
-    zoom = 25 # size of grid squares
-    
-    change_player = False # used to make sure play switch happens only once when button is pressed
-    
+    zoom = 25 # size of grid squares    
     
     # BASICALLY RESET FUNCTION, should that be a separate function?
     def __init__(self, player = 0):
-        
         self.player = player # 0 human, 1 computer
         self.full_height = self.height + self.buffer # including buffer region above
         
@@ -70,6 +71,9 @@ class Tetris:
         self.queue = [] # contains next pieces
         self.has_swapped = False # to allow user to save a tetromino to swap for later, once per drop
         self.swap_piece = None 
+        
+        
+        # NOT USED NOW, call get_reward() instead
         self.total_reward = 0 # Used for training, always displayed
         
         # Set waiting queue and current figure
@@ -82,9 +86,7 @@ class Tetris:
             new_line = []
             for j in range(self.width):
                 new_line.append(0)
-                
-                
-                
+                     
             # TESTING KICKS, this example: https://tetris.fandom.com/wiki/SRS:
                 # if (i,j) in [(23,0),(23,1), (23,2), (23,3), (23,4), (23,6), (23,7), (23,8), (23,9),
                 #              (22,0),(22,1), (22,2), (22,3), (22,6), (22,7), (22,8), (22,9),
@@ -96,12 +98,15 @@ class Tetris:
                 #     new_line.append(1)
                 # else:
                 #     new_line.append(0)
-                    
-                    
-                    
-                    
+        
             self.board.append(new_line)
 
+        
+        
+        
+        
+        
+        
     # called in init, when blocks freeze/line break, and debug call for chosen tetromino
     def new_figure(self, mode=None):
         # if short on blocks, add them to queue, pop the first one from the list, add another to end
@@ -111,7 +116,7 @@ class Tetris:
             self.figure = self.queue.pop(0)
             self.queue.append(Figure(x=self.tet_x,  y=self.tet_y))
         else:
-            self.figure = Figure(x=self.tet_x,  y=self.tet_y, mode=mode+1) # plus 1 to fix indexing
+            self.figure = Figure(x=self.tet_x,  y=self.tet_y, mode=mode) # 
         
 
     def intersects(self):
@@ -136,9 +141,6 @@ class Tetris:
                 if self.board[i][j] == 0:
                     zeros += 1
                     break
-                # else:
-                #     zeros = 1# random number not 0
-                #     break
             if zeros == 0:
                 lines += 1
                 self.lines += 1
@@ -185,46 +187,44 @@ class Tetris:
         if self.intersects():
             self.figure.y -= 1
             self.freeze()
+    def get_reward(self):
+        self.total_reward = self.score + self.landed_blocks #(self.score + self.landed_blocks) / ((self.landed_blocks+1)/4) 
+        if self.state == 'gameover':
+            self.total_reward -= 10
+        return self.total_reward
+           # / ((pygame.time.get_ticks()-game.game_start_time)/1000) 
 
     def freeze(self):
-        # for i in range(4):
-        #     for j in range(4):
         for ind in self.figure.image():
             i = ind//4
             j = ind%4
-                # if i * 4 + j in self.figure.image():
-            self.board[i + self.figure.y][j + self.figure.x] = self.figure.type
-
+            self.board[i + self.figure.y][j + self.figure.x] = self.figure.piece
+            if self.board[self.buffer-1][j + self.figure.x] != 0:
+                self.state = "gameover"
         self.landed_blocks += 4
         self.break_lines()
         self.has_swapped = False
         
-        
-        # hopefully a better/quicker way to check for gameover
-        for j in range(self.width):
-            # check row = 3 (4th row), any non zero elements mean Game Over
-            if self.board[self.buffer-1][j] != 0: # 
-                self.state = "gameover"
-                return # no need to plot next figure
-                
+        if self.state == "gameover":
+            return
         self.new_figure()
+
             
 
     def swap(self):
         if self.has_swapped:
-            # SHOULD play error sound cause you can't swap when you already swapped
-            return
+            return False
         
         self.has_swapped = True
         # save current piece for later
         if not(self.swap_piece):
-            self.swap_piece = Figure(x=self.tet_x,  y=self.tet_y, mode= self.figure.type)
+            self.swap_piece = Figure(x=self.tet_x,  y=self.tet_y, mode= self.figure.piece)
             self.new_figure()
         else:
-            temp_piece = Figure(x=self.tet_x,  y=self.tet_y, mode= self.swap_piece.type)
-            self.swap_piece = Figure(x=self.tet_x,  y=self.tet_y, mode= self.figure.type)
+            temp_piece = Figure(x=self.tet_x,  y=self.tet_y, mode= self.swap_piece.piece)
+            self.swap_piece = Figure(x=self.tet_x,  y=self.tet_y, mode= self.figure.piece)
             self.figure = temp_piece
-
+        return True
         
 
     def go_side(self, dx):
@@ -243,8 +243,6 @@ class Tetris:
         
         # BASE CASE, no kick needed
         if not(self.intersects()):
-        #     self.figure.rotation = old_rotation
-        # else: 
             return
         
         # Failed without nudge
@@ -270,3 +268,178 @@ class Tetris:
         
         # IF no nudges work
         self.figure.rotation = old_rotation
+        
+    
+    
+    
+    
+    
+    
+    
+    def get_heights(self): # returns list of heights of each column
+        heights = [0]*self.width
+        
+        for col in range(self.width):
+            for row in range(self.buffer, self.full_height):
+                if self.board[row][col] != 0:
+                    heights[col] = self.full_height-row
+                    break
+        return heights
+    
+            
+            
+    def get_lines(self):
+        lines = 0
+        for row in range(self.full_height):
+            line_cleared = True
+            for col in range(self.width):
+                if self.board[row][col] == 0:
+                    line_cleared = False
+                    break
+            if line_cleared:
+                lines += 1
+        return lines
+        
+    def get_holes(self, heights): # sum of empty blocks below filled blocks
+        holes = 0
+        for col, height in enumerate(heights): # one height for each column
+            for row in range(1,height): # can't have a 
+                if self.board[self.full_height - row][col] == 0:
+                    
+                    holes += 1
+        # if height is 9, need to check rows 24-1(bottom), 
+                                        #    24-2(sec bottom)
+                                        #... 24-8
+    
+        return holes
+    
+    
+    def get_bumps(self, heights):
+        bumps = 0
+        for col in range(1, self.width):
+            bumps += abs(heights[col-1] - heights[col])
+        return bumps
+    
+    # literal heights, NOT row values
+    def get_total_height(self, heights):
+        return sum(heights) 
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def get_properties(self): # board should already be modified!
+        heights = self.get_heights()
+        return [self.get_lines(), self.get_holes(heights),
+                self.get_bumps(heights), self.get_total_height(heights)]
+    
+    # mess with action sequences to get resulting boards and return to original state
+    # call get_property function to get properties
+    def get_landing_scores(self, action_seq): 
+        # Return 6 numbers
+        # (lines_cleared, holes, bumpiness, total_height, swap, 1st_queue_piece) 
+        # IGNORE REST OF THE BOARD
+        swap = action_seq[0]
+        rot = action_seq[1]
+        shift = action_seq[2]
+        
+        # define the piece
+        if swap == 1 and not(self.has_swapped):
+            if self.swap_piece:
+                piece = Figure(x=self.tet_x + shift,  y=self.tet_y, mode= self.swap_piece.piece, rotation= rot)
+            else:
+                piece = Figure(x=self.tet_x + shift,  y=self.tet_y, mode= self.queue[0].piece, rotation = rot)
+        else: #not swap, use current piece
+            # piece = Figure(x=self.tet_x + shift,  y=self.tet_y, mode= self.queue[0].piece, rotation = rot)
+            piece = Figure(x=self.tet_x + shift,  y=self.tet_y, mode= self.figure.piece, rotation = rot)
+
+        # drop piece and check that piece is in bounds, otherwise return False
+        old_fig = Figure(x=self.figure.x, y = self.figure.y, mode = self.figure.piece, rotation = self.figure.rotation)
+        self.figure = Figure(x = piece.x, y = piece.y, mode = piece.piece, rotation = piece.rotation)
+        try:
+            if self.intersects(): # may attempt pushing piece out of in legal intersection
+                self.figure = Figure(x = old_fig.x, y = old_fig.y, mode = old_fig.piece, rotation = old_fig.rotation)
+                return False
+        except:
+            # may attempt push piece for error in intersection function
+            self.figure = Figure(x = old_fig.x, y = old_fig.y, mode = old_fig.piece, rotation = old_fig.rotation)
+            return False
+        
+        # move piece down all the way
+        while not self.intersects():
+            self.figure.y += 1
+        self.figure.y -= 1
+        
+        # place block on board
+        for ind in self.figure.image():
+            i = ind//4
+            j = ind%4
+            self.board[i + self.figure.y][j + self.figure.x] = self.figure.piece
+        properties = self.get_properties()
+        
+        # cleaning up board
+        for ind in self.figure.image():
+            i = ind//4
+            j = ind%4
+            self.board[i + self.figure.y][j + self.figure.x] = 0
+        # returning figure
+        self.figure = Figure(x = old_fig.x, y = old_fig.y, mode = old_fig.piece, rotation = old_fig.rotation)
+        
+        # No swap, keep old swap piece
+        if self.has_swapped or swap == 0: # no swap
+            if self.swap_piece:
+                swap_piece = self.swap_piece.piece
+            else:
+                swap_piece = 0
+        else:
+            swap_piece = self.figure.piece            
+            
+        return properties + [swap_piece, self.queue[1].piece]
+        
+         
+            
+    
+    
+    
+    def get_next_states(self): # ASSUMING enough space on board and time to make moves!
+        if self.state == 'gameover':
+            return None
+        states = {}
+        action_seqs = []
+        for rot in [-1,0,1,2]: # possible rotations
+            for shift in range(-6,4): # possible shifts
+                
+                
+                if not(self.figure.name == 'O' and rot != 0) and \
+                    not(self.figure.name != 'I' and shift==-6) and \
+                    not(self.figure.name in ['I', 'S', 'Z'] and rot in [-1,2]):
+                        action_seq = (0, rot, shift)
+                        state_summary = self.get_landing_scores(action_seq)
+                        if state_summary:
+                            states[action_seq] = state_summary
+                
+                if not(self.has_swapped): # add the sequence with swapping
+                    temp = self.swap_piece
+                    if not(temp):
+                        temp = self.queue[0] # a fig
+                        if not temp:
+                            continue # Don't think this can happen
+                    
+                    if not(temp.name == 'O' and rot != 0) and \
+                    not(temp.name != 'I' and shift==-6) and \
+                    not(temp.name in ['I', 'S', 'Z'] and rot in [-1,2]):
+                        action_seq = (1, rot, shift)
+                        state_summary = self.get_landing_scores(action_seq)
+                        if state_summary:
+                            states[action_seq] = state_summary
+                
+        return states

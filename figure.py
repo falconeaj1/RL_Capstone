@@ -47,18 +47,18 @@ class Figure:
     }
         
 
-    def __init__(self, x, y, mode = None):
+    def __init__(self, x, y, mode = None, rotation = 0):
         self.x = x
         self.y = y
         if not (mode in range(1,len(self.figures)+1)):
-            self.type = random.randint(1, len(self.figures)-1) # 0 indexing! self.figures has an empty spot, randint is inclusive
+            self.piece = random.randint(1, len(self.figures)-1) # 0 indexing! self.figures has an empty spot, randint is inclusive
         else:
-            self.type = mode
-        self.name = self.names[self.type]
-        self.rotation = 0
+            self.piece = mode
+        self.name = self.names[self.piece]
+        self.rotation = rotation
 
     def image(self):
-        return self.figures[self.type][self.rotation]
+        return self.figures[self.piece][self.rotation]
 
     def rotate(self, direction):
-        self.rotation = (self.rotation + direction) % len(self.figures[self.type])
+        self.rotation = (self.rotation + direction) % len(self.figures[self.piece])
