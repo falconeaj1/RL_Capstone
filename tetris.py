@@ -162,6 +162,7 @@ class Tetris:
         #  Include Gold/Silver blocks
         if lines > 0:
             self.score += self.points_per_line[lines-1] * (self.level+1) # lines - 1 and self.level + 1 because of 0 indexing
+        return lines
 
         
     # returns the y value of where piece will drop, used for drawing shadow block
@@ -176,22 +177,24 @@ class Tetris:
         
     def go_space(self):
         if self.state == "gameover":
-            return
+            return 0
         while not self.intersects():
             self.figure.y += 1
         self.figure.y -= 1
-        self.freeze()
+        return self.freeze()
 
     def go_down(self):
         self.figure.y += 1
         if self.intersects():
             self.figure.y -= 1
-            self.freeze()
-    def get_reward(self):
-        self.total_reward = self.score + self.landed_blocks #(self.score + self.landed_blocks) / ((self.landed_blocks+1)/4) 
-        if self.state == 'gameover':
-            self.total_reward -= 10
-        return self.total_reward
+            return self.freeze()
+        else:
+            return 0 # lines
+    # def get_reward(self):
+    #     self.total_reward = self.score + self.landed_blocks #(self.score + self.landed_blocks) / ((self.landed_blocks+1)/4) 
+    #     if self.state == 'gameover':
+    #         self.total_reward -= 10
+    #     return self.total_reward
            # / ((pygame.time.get_ticks()-game.game_start_time)/1000) 
 
     def freeze(self):
@@ -202,13 +205,13 @@ class Tetris:
             if self.board[self.buffer-1][j + self.figure.x] != 0:
                 self.state = "gameover"
         self.landed_blocks += 4
-        self.break_lines()
+        lines = self.break_lines()
         self.has_swapped = False
         
         if self.state == "gameover":
-            return
+            return lines
         self.new_figure()
-
+        return lines
             
 
     def swap(self):
@@ -336,11 +339,11 @@ class Tetris:
     
     
     
-    
-    def get_properties(self): # board should already be modified!
+    # SHOULD BE CLEANED, had to put swap piece here so land function could clean up board
+    def get_properties(self, swap_piece): # board should already be modified!
         heights = self.get_heights()
         return [self.get_lines(), self.get_holes(heights),
-                self.get_bumps(heights), self.get_total_height(heights)]
+                self.get_bumps(heights), self.get_total_height(heights), swap_piece, self.queue[1].piece]
     
     # mess with action sequences to get resulting boards and return to original state
     # call get_property function to get properties
@@ -384,7 +387,17 @@ class Tetris:
             i = ind//4
             j = ind%4
             self.board[i + self.figure.y][j + self.figure.x] = self.figure.piece
-        properties = self.get_properties()
+            
+            
+        # No swap, keep old swap piece
+        if self.has_swapped or swap == 0: # no swap
+            if self.swap_piece:
+                swap_piece = self.swap_piece.piece
+            else:
+                swap_piece = 0
+        else:
+            swap_piece = self.figure.piece      
+        properties = self.get_properties(swap_piece)
         
         # cleaning up board
         for ind in self.figure.image():
@@ -394,16 +407,9 @@ class Tetris:
         # returning figure
         self.figure = Figure(x = old_fig.x, y = old_fig.y, mode = old_fig.piece, rotation = old_fig.rotation)
         
-        # No swap, keep old swap piece
-        if self.has_swapped or swap == 0: # no swap
-            if self.swap_piece:
-                swap_piece = self.swap_piece.piece
-            else:
-                swap_piece = 0
-        else:
-            swap_piece = self.figure.piece            
+              
             
-        return properties + [swap_piece, self.queue[1].piece]
+        return properties 
         
          
             

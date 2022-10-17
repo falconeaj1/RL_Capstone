@@ -83,46 +83,38 @@ class Tetris_Env(gym.Env):
         NUM_ROTATIONS = 4
         
         # FROM DOCUMENTATION, adjusted for Tetris
-        self.observation_space = spaces.Dict(
-            {
-                # just use a 1 if piece is there
-                "board": spaces.Box(low=0, high=1, 
-                                    shape=(self.game.height, self.game.width), 
-                                    dtype=int),
-                "agent": spaces.Dict({
-                        "x": spaces.Discrete(self.game.width),
-                        "y": spaces.Discrete(self.game.height + self.game.buffer),
-                        "piece": spaces.Discrete(NUM_TETROMINOS),
-                        "rotation": spaces.Discrete(NUM_ROTATIONS)
-                    }
-                ),
-                "queue": spaces.Box(low = 1, high = NUM_TETROMINOS,
-                                    shape = (self.game.n_queue,),
-                                    dtype = int),
-                "swap": spaces.Discrete(NUM_TETROMINOS+1), # in case empty (0)
-                "has_swapped": spaces.Discrete(2)
-                
-            }
-        )
+        self.observation_space = spaces.Box(low = np.array([0, 0, 0, 0, 0, 0]), 
+                                            high = np.array([4,200,200, 200, 7, 7]),
+                                            dtype = int)
+                                        #         self.observation_space = spaces.Dict(
+                                        #             {
+                                        #                 # just use a 1 if piece is there
+                                        #                 "board": spaces.Box(low=0, high=1, 
+                                        #                                     shape=(self.game.height, self.game.width), 
+                                        #                                     dtype=int),
+                                        #                 "agent": spaces.Dict({
+                                        #                         "x": spaces.Discrete(self.game.width),
+                                        #                         "y": spaces.Discrete(self.game.height + self.game.buffer),
+                                        #                         "piece": spaces.Discrete(NUM_TETROMINOS),
+                                        #                         "rotation": spaces.Discrete(NUM_ROTATIONS)
+                                        #                     }
+                                        #                 ),
+                                        #                 "queue": spaces.Box(low = 1, high = NUM_TETROMINOS,
+                                        #                                     shape = (self.game.n_queue,),
+                                        #                                     dtype = int),
+                                        #                 "swap": spaces.Discrete(NUM_TETROMINOS+1), # in case empty (0)
+                                        #                 "has_swapped": spaces.Discrete(2)
 
-        self.action_space = spaces.Box(low=np.array([-1, -5, -1,-1]), high=np.array([2, 4,1,1]), dtype=int)
+                                        #             }
+                                        #         )
+
+        self.action_space = spaces.Box(low=np.array([0, -1, -6]), high=np.array([1, 2, 4]), dtype=int)
         
     def _get_obs(self):
-        # s = 0
-        # if self.game.has_swapped:
-        s = self.game.swap_piece
-        return {"board": np.where(np.array(self.game.board[self.game.buffer:][:]) != 0, 1, 0),
-                "agent": {"x": self.game.figure.x,
-                          "y": self.game.figure.y,
-                          "piece": self.game.figure.piece,
-                          "rotation": self.game.figure.rotation
-                         },
-                "queue": np.array([tetro.piece for tetro in self.game.queue]),
-                "swap": s if not(s) else s.piece,
-                "has_swapped": 1 if self.game.has_swapped else 0
-               }
-    
-    
+        if self.game.state == 'gameover':
+            return
+        return self.game.get_next_states()
+
     # ONLY HERE BECAUSE GYM INDICATED THAT IT WAS NEEDED
     def _get_info(self):
         return {"score": self.game.score, "lines": self.game.lines}
@@ -139,7 +131,7 @@ class Tetris_Env(gym.Env):
             self.game.__init__(player = player)
             self._render_frame()
         else:
-            self.game__init__(player = player)
+            self.game.__init__(player = player)
 
 
                                     
@@ -152,35 +144,47 @@ class Tetris_Env(gym.Env):
     
     
     # called only by agent!
-    def step(self, action_dict):
+    def step(self, action_list):
         # Move a sequence of actions forward
         # action should be a dict
         # where      (swap, rotations, shifts, hard drop)
-        #              0 or 1, -1 to 2, -5 to 4, action 7
+        #              0 or 1, -1 to 2, -6 to 3, action 7
         # if action is sequence of moves to land block, will need to go through several frames
-        if action_dict['swap']==1:
+        if action_list[0]==1:
             self.next_frame(action = self.actions['swap'])
         
-        rot = action_dict['rotation']
+        rot = action_list[1]
         if rot == -1:
             self.next_frame(action = self.actions['ccw'])
         elif rot == 1:
             self.next_frame(action = self.actions['cw'])
         elif rot == 2:
             self.next_frame(action = self.actions['cw'])
-            self.next_frame(action = self.actions['cw'])
-        shift = action_dict['shift']
+            if self.game.state != 'gameover':
+                self.next_frame(action = self.actions['cw'])
+        shift = action_list[2]
         if shift < 0:
             for _ in range(abs(shift)):
-                self.next_frame(action = self.actions['left'])
+                if self.game.state != 'gameover':
+                    self.next_frame(action = self.actions['left'])
         else:
             for _ in range(shift):
-                self.next_frame(action = self.actions['right'])
-        self.next_frame(action = self.actions['hard'])
+                if self.game.state != 'gameover':
+                    self.next_frame(action = self.actions['right'])
+                
+                
+                
+                
+                
+        lines_cleared = self.next_frame(action = self.actions['hard'])
 
         
-
-        reward = self.game.get_reward()
+        
+        
+        if self.game.state == "gameover":
+            reward = -10
+        else:
+            reward = 4 + lines_cleared**2
         observation = self._get_obs()
         info = self._get_info()
         return observation, reward, self.game.state == 'gameover', False, info
@@ -191,8 +195,10 @@ class Tetris_Env(gym.Env):
     def do_naive_action(self, action = None):
         # actions = ['no_op', 'left', 'right', 'down', 'cw', 'ccw', 'swap', 'hard']   
         assert not(action) or action in range(8), f'action = {action} is invalid, needs to be None or in [0,7]'
+        
+        lines = 0 
         if not(action): # if no action passed in, do something random
-            action = random.randint(0, 7) # -2 because want to skip hard, inclusive here
+            action = random.randint(0, 6) # -2 because want to skip hard, inclusive here
         if action == self.actions['no_op']: # no op
             pass
         elif action == self.actions['left']: # left
@@ -200,7 +206,7 @@ class Tetris_Env(gym.Env):
         elif action == self.actions['right']: # go right
             self.game.go_side(1)        
         elif action == self.actions['down']: # soft down
-            self.game.go_down()
+            lines = self.game.go_down()
         elif action == self.actions['cw']: # cw
             self.game.rotate(direction = 1)
         elif action == self.actions['ccw']: # ccw
@@ -208,10 +214,10 @@ class Tetris_Env(gym.Env):
         elif action == self.actions['swap']: # swap
             self.game.swap()
         elif action == self.actions['hard']: # hard drop
-            self.game.go_space()
+            lines = self.game.go_space()
             self.counter = 0 # shouldn't matter except when it is fast
     
-
+        return lines
         
         
         
@@ -285,11 +291,15 @@ class Tetris_Env(gym.Env):
         #### ACTIONS COME FROM AGENT CHOOSING, NOT THE ENVIRONMENT
         # make computer choose random action- MAY NEED TO FIX FOR AGENT TRAINING
                # player 0 for human play
-        # DON'T do anything if it's gameover                        
+        # DON'T do anything if it's gameover
+        
+        
+        lines = 0
+        
         if self.game.player == 1:
             if self.game.state == 'gameover':
                 return
-            self.do_naive_action(action)
+            lines = self.do_naive_action(action)
 
                       
         # Player 0 will be getting inputs in play game function!
@@ -304,6 +314,8 @@ class Tetris_Env(gym.Env):
 
         if self.render_mode == "human":
             self._render_frame() 
+            
+        return lines
     
     
     
@@ -409,7 +421,7 @@ class Tetris_Env(gym.Env):
         text_game_over1 = font1.render("Press q", True, (255, 215, 0))
         text_swap = font.render("SWAP!", True, BLACK)
         text_queue = font.render("Queue:", True, BLACK)
-        text_reward = font.render(f'Reward: {round(self.game.get_reward(),2)}', True, BLACK)
+        # text_reward = font.render(f'Reward: {round(self.game.get_reward(),2)}', True, BLACK)
 
 
 
@@ -440,7 +452,7 @@ class Tetris_Env(gym.Env):
 
         self.screen.blit(text_swap, [50, 250])
         self.screen.blit(text_queue, [self.game.queue_x, self.game.queue_y-50])
-        self.screen.blit(text_reward, [0,0])
+        # self.screen.blit(text_reward, [0,0])
         if self.game.state == "gameover":
             self.screen.blit(text_game_over, [250, 80])
             self.screen.blit(text_game_over1, [250, 140])
@@ -456,7 +468,7 @@ class Tetris_Env(gym.Env):
             print(f'\t~attempting to close screens~')
             pygame.display.quit()
             pygame.quit()
-        print(f'score for game was = {self.game.get_reward()}')
+        # print(f'score for game was = {self.game.get_reward()}')
         print(f'after, screen = {self.screen}.')
 
     
