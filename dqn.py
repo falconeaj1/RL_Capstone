@@ -35,7 +35,7 @@ class DQNAgent:
     '''
 
     def __init__(self, state_size=6, mem_size=10000, discount=0.95,
-                 epsilon=1, epsilon_min=0, epsilon_stop_episode=500,
+                 epsilon=1, epsilon_min=0.05, epsilon_stop_episode=500,
                  n_neurons=[32,32], activations=['relu', 'relu', 'linear'],
                  loss='mse', optimizer='adam', replay_start_size=None):
 
