@@ -21,7 +21,7 @@ The main data that was acquired was sequences of potential actions and correspon
 
 
 #### Game Programming: 
-Having already programmed Tetris in MATLAB, I started with a very vanilla version of the game programed from https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318, mainly to learn and understand how timers and rendering was done in python. Several important features were added including debugging buttons to allow user to more easily recreate situations and check functionality, SRS rotation system, shadows for blocks to see where they land, and the ability to switch from human player to computer. Currently, the computer only makes random moves, but the goal is to have the computer play optimal moves chosen by the agent (hopefully to potentially rescue the user if they are in a pinch).
+Having already programmed Tetris in MATLAB, I started with a very vanilla version of the game programed from https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318, mainly to learn and understand how timers and rendering was done in python. Several important features were added including debugging buttons to allow user to more easily recreate situations and check functionality, SRS rotation system, shadows for blocks to see where they land, and the ability to switch from human player to computer where the computer only makes random moves, but the goal is to have the computer play optimal moves chosen by the agent (hopefully to potentially rescue the user if they are in a pinch).
 
 
 #### RL:
