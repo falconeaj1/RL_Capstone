@@ -5,7 +5,7 @@ Capstone Project for GA Using Reinforcement Learning
 
 ### Description
 
-This goal of this project was to program a basic version of tetris and implement a basic version of reinforcement learning so that the agent could play the game and clearl lines (preferably at a high level).
+This goal of this project was to program a basic version of tetris and implement a basic version of reinforcement learning so that the agent could play the game and clear lines (preferably at a high level).
 
 ### Scenario
 
