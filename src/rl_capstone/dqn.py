@@ -139,8 +139,14 @@ class DQNAgent:
 
             # Fit the model to the given values
             try:
-                self.model.fit(np.array(x), np.array(y), batch_size=batch_size, epochs=epochs, verbose=0)
-            except:
+                self.model.fit(
+                    np.array(x),
+                    np.array(y),
+                    batch_size=batch_size,
+                    epochs=epochs,
+                    verbose=0,
+                )
+            except Exception:
                 print("FAILED, couldn't convert to np array")
                 # print(f'{len(x)}')
                 # print(f'y = \n-----')
