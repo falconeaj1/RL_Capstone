@@ -44,15 +44,22 @@ class Blob:
         elif choice == 8:
             self.move(x=0, y=0)
 
-    def move(self, x=False, y=False):
+    def move(self, x=None, y=None):
+        """Move the blob.
+
+        If ``x`` or ``y`` is ``None``, the respective coordinate will move in a
+        random direction ``[-1, 0, 1]``. A value of ``0`` means no movement in
+        that axis.
+        """
+
         # If no value for x, move randomly
-        if not x:
+        if x is None:
             self.x += np.random.randint(-1, 2)
         else:
             self.x += x
 
         # If no value for y, move randomly
-        if not y:
+        if y is None:
             self.y += np.random.randint(-1, 2)
         else:
             self.y += y
