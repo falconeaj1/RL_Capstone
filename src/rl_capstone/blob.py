@@ -78,8 +78,10 @@ class Blob:
 class BlobEnv:
     SIZE = 10
     # MOVE_PENALTY = -1
-    MOVE_CLOSER_REWARD = -1
-    MOVE_FARTHER_REWARD = -2
+    # Provide positive feedback for moving toward the food so PPO
+    # has a clearer gradient signal during training.
+    MOVE_CLOSER_REWARD = 1
+    MOVE_FARTHER_REWARD = -1
     ENEMY_PENALTY = -300
     FOOD_REWARD = 25
     good_move = False
