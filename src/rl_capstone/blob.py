@@ -210,3 +210,18 @@ class BlobEnv:
             cv2.waitKey(1)  # needed to actually close image, could just leave image up too?
         else:
             cv2.waitKey(pause)
+
+def main():
+    """Run a simple random policy in the Blob environment."""
+    env = BlobEnv()
+    env.reset()
+    env.render()
+    done = False
+    while not done:
+        action = np.random.randint(0, env.ACTION_SPACE_SIZE)
+        _, _, done = env.step(action)
+        env.render()
+
+
+if __name__ == "__main__":
+    main()

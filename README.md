@@ -1,6 +1,14 @@
 # RL_Capstone
 Capstone Project for GA Using Reinforcement Learning
 
+### Usage
+
+Run `python blob.py` to see the demo.
+
+To play a quick Tetris demo, execute:
+```
+python -c "from rl_capstone.tetris_environment import Tetris_Env; Tetris_Env(render_mode='human').play_game()"
+```
 
 
 ### Description
