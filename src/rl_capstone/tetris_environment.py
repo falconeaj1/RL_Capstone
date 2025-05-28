@@ -4,13 +4,14 @@
 ### Code originally taken from:
 # https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318
 # highly modified
-import pygame
 import random
-from . import tetris
-import gymnasium
-from gymnasium import spaces
-import numpy as np
 
+import gymnasium
+import numpy as np
+import pygame
+from gymnasium import spaces
+
+from . import tetris
 
 Tetris = tetris.Tetris
 
