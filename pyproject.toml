@@ -20,7 +20,8 @@ dev = ["ruff"]
 
 [tool.ruff]
 line-length = 120
-select = ["E", "F"]
+[tool.ruff.lint]
+select = ["E", "F", "I"]
 
 [build-system]
 requires = ["setuptools>=61"]

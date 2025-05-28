@@ -1,11 +1,11 @@
 # SETTING UP NEURAL NETWORK TO PLAY GAME
 
-from keras.models import Sequential
-from keras.layers import Dense
-from collections import deque
-import numpy as np
 import random
+from collections import deque
 
+import numpy as np
+from keras.layers import Dense
+from keras.models import Sequential
 
 # Deep Q-learning Agent
 #  code modified from https://keon.github.io/deep-q-learning/
