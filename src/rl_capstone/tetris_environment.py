@@ -8,10 +8,13 @@ import random
 
 import gymnasium
 import numpy as np
-import pygame
-from gymnasium import spaces
+import warnings
 
-from . import tetris
+warnings.filterwarnings("ignore", category=UserWarning, module="pygame.pkgdata")  # noqa: E402
+import pygame  # noqa: E402
+from gymnasium import spaces  # noqa: E402
+
+from . import tetris  # noqa: E402
 
 Tetris = tetris.Tetris
 
