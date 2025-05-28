@@ -1,0 +1,23 @@
+[project]
+name = "rl-capstone"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pillow",
+    "opencv-python",
+    "pygame",
+    "gym",
+    "tensorflow-macos; platform_system == 'Darwin' and platform_machine == 'arm64'",
+    "tensorflow-metal; platform_system == 'Darwin' and platform_machine == 'arm64'",
+    "keras",
+    "matplotlib",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = ["ruff"]
+
+[tool.ruff]
+line-length = 120
+select = ["E", "F"]
