@@ -25,11 +25,13 @@ class ModifiedTensorBoard(TensorBoard):
         self._log_write_dir = self.log_dir
 
     def set_model(self, model):
-        self.model = model
+        """Initialize training and validation counters without assigning the model."""
+        super().set_model(model)
         self._train_dir = os.path.join(self._log_write_dir, "train")
-        self._train_step = self.model._train_counter
+        # Newer versions of Keras expose counters on the model; fall back to 0 if absent
+        self._train_step = getattr(self.model, "_train_counter", tf.Variable(0, dtype="int64"))
         self._val_dir = os.path.join(self._log_write_dir, "validation")
-        self._val_step = self.model._test_counter
+        self._val_step = getattr(self.model, "_test_counter", tf.Variable(0, dtype="int64"))
         self._should_write_train_graph = False
 
     def on_epoch_end(self, epoch, logs=None):
