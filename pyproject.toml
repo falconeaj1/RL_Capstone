@@ -7,7 +7,7 @@ dependencies = [
     "pillow",
     "opencv-python",
     "pygame",
-    "gym",
+    "gymnasium",
     "tensorflow-macos; platform_system == 'Darwin' and platform_machine == 'arm64'",
     "tensorflow-metal; platform_system == 'Darwin' and platform_machine == 'arm64'",
     "keras",

@@ -9,8 +9,8 @@ import random
 import sys
 import time
 from . import tetris
-import gym
-from gym import spaces
+import gymnasium
+from gymnasium import spaces
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -41,7 +41,7 @@ colors = [
     (194, 189, 176), # SILVER, not implemented
 ]
 
-class Tetris_Env(gym.Env):
+class Tetris_Env(gymnasium.Env):
     size = (800, 800)
     done = False
     clock = pygame.time.Clock()
