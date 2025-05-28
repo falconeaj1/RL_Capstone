@@ -211,6 +211,7 @@ class BlobEnv:
         else:
             cv2.waitKey(pause)
 
+
 def main():
     """Run a simple random policy in the Blob environment."""
     env = BlobEnv()
