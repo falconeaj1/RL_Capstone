@@ -72,8 +72,6 @@ class Tetris_Env(gymnasium.Env):
         self.cur_time = 0
 
         # avoiding magic numbers
-        NUM_TETROMINOS = 7
-        NUM_ROTATIONS = 4
 
         # FROM DOCUMENTATION, adjusted for Tetris
         self.observation_space = spaces.Box(
@@ -354,8 +352,6 @@ class Tetris_Env(gymnasium.Env):
             for ind in self.game.figure.image():
                 i = ind // 4
                 j = ind % 4
-                p = i * 4 + j
-
                 # Plotting of shadow piece
                 if shadow_y + i >= self.game.buffer:
                     draw_rect_alpha(

@@ -17,7 +17,9 @@ class Tetris:
 
     lines_per_level = 10  # num lines to get to next level
     points_per_line = [100, 300, 500, 800]  # multiplied by level
-    # number of frames (fps=60) that each level plays at, not level 29+ is nearly impossible for humans so may need to adjust
+    # Number of frames (fps=60) each level plays at.
+    # Note that levels above 29 are nearly impossible for humans, so this may
+    # need adjusting.
     level_frames_per_drop = {
         0: 48,
         1: 43,
@@ -130,7 +132,8 @@ class Tetris:
         for ind in self.figure.image():
             i = ind // 4
             j = ind % 4
-            # check was > 0, but I want negative numbers to eventually check if block has been broken for gold/silver squares
+            # Check was > 0, but negative numbers will allow tracking when a
+            # block has been broken for gold/silver squares.
             if (
                 i + self.figure.y >= self.full_height
                 or j + self.figure.x >= self.width
@@ -199,7 +202,11 @@ class Tetris:
             return 0  # lines
 
     # def get_reward(self):
-    #     self.total_reward = self.score + self.landed_blocks #(self.score + self.landed_blocks) / ((self.landed_blocks+1)/4)
+    #     self.total_reward = (
+    #         self.score + self.landed_blocks
+    #         # (self.score + self.landed_blocks)
+    #         # / ((self.landed_blocks + 1) / 4)
+    #     )
     #     if self.state == 'gameover':
     #         self.total_reward -= 10
     #     return self.total_reward
@@ -359,12 +366,22 @@ class Tetris:
         old_fig = Figure(x=self.figure.x, y=self.figure.y, mode=self.figure.piece, rotation=self.figure.rotation)
         self.figure = Figure(x=piece.x, y=piece.y, mode=piece.piece, rotation=piece.rotation)
         try:
-            if self.intersects():  # may attempt pushing piece out of in legal intersection
-                self.figure = Figure(x=old_fig.x, y=old_fig.y, mode=old_fig.piece, rotation=old_fig.rotation)
+            if self.intersects():  # may attempt pushing piece out of an illegal intersection
+                self.figure = Figure(
+                    x=old_fig.x,
+                    y=old_fig.y,
+                    mode=old_fig.piece,
+                    rotation=old_fig.rotation,
+                )
                 return False
-        except:
-            # may attempt push piece for error in intersection function
-            self.figure = Figure(x=old_fig.x, y=old_fig.y, mode=old_fig.piece, rotation=old_fig.rotation)
+        except Exception:
+            # May attempt push piece for error in intersection function
+            self.figure = Figure(
+                x=old_fig.x,
+                y=old_fig.y,
+                mode=old_fig.piece,
+                rotation=old_fig.rotation,
+            )
             return False
 
         # move piece down all the way
@@ -402,7 +419,6 @@ class Tetris:
         if self.state == "gameover":
             return None
         states = {}
-        action_seqs = []
         for rot in [-1, 0, 1, 2]:  # possible rotations
             for shift in range(-6, 4):  # possible shifts
                 if (
