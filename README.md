@@ -1,23 +1,37 @@
 # RL_Capstone
-Capstone Project for GA Using Reinforcement Learning
+Reinforcement Learning Project
+- Tetris
+- Simple Maze Game
 
 ### Usage
 
-Run `python blob.py` to see the demo.
+Run `python blob.py` to see the maze game demo.
 
-To play a quick Tetris demo, execute:
+To train the reinforcement agent on the simple Blob environment, execute:
+```
+python scripts/train_blob.py
+```
+
+To see model (bug in script), run:
+```
+python demo_blob.py
+```
+
+To play Tetris, execute:
 ```
 python src/rl_capstone/play_tetris.py --render-mode human
 ```
 
+The training of models was wokred on in 
+
 
 ### Description
 
-This goal of this project was to program a basic version of tetris and implement a basic version of reinforcement learning so that the agent could play the game and clear lines (preferably at a high level).
+This goal of this project was to program a basic version of tetris and implement a basic version of reinforcement learning so that the agent could play the game and clear lines (preferably at a high level). An easier game of a straightforward maze (agent moves towards green object and avoids red object), was also included to help figure out details of training and deep-Q networks.
 
 ### Scenario
 
-DeepMind has done some incredible work in the area of reinforcement learning in the past decade, mastering games like Chess, Go and a variety of Atari games. Beyond games, they recently solved protein folding with AlphaFold demonstrating that learning optimal policies to solve complex problems is not just limited to games. I wanted to learn some of the fundamentals of RL by implementing an agent to play the game Tetris, simple to understand but complicated enough to be a great final project.
+DeepMind has done some incredible work in the area of reinforcement learning in the past decade, mastering games like Chess, Go and a variety of Atari games. Beyond games, they recently solved protein folding with AlphaFold demonstrating that learning optimal policies to solve complex problems is not just limited to games. This project is an attempt to learn some of the fundamentals of RL by implementing an agent to play the game Tetris, simple to understand but complicated enough to be a great project.
 
 #### Executive Summary
 
@@ -34,7 +48,7 @@ Having already programmed Tetris in MATLAB, I started with a very vanilla versio
 
 #### RL:
 
-After working with OpenAI gym and stable baselines, I decided I'd prefer to use a custom agent to play the game with self defined neural networks as it was more clear what exactly was going on behind the scenes and seemed better to debug. I followed a similar approach to https://github.com/nuno-faria/tetris-ai/blob/master/README.md and adopted their strategy of simplifying the game state and using a DQN network. Although, my states and observations were defined differently and had many issues trying to get a similar network to train and run. After several hours of training, the notebook seemed to crash and after retraining- the agent appeared to learn a few things but still seemed to need to do a significant amount of exploring to learn the true q-values of different state action pairs.
+I followed a similar approach to https://github.com/nuno-faria/tetris-ai/blob/master/README.md and adopted their strategy of simplifying the game state and using a DQN network. Although, my states and observations were defined differently and had many issues trying to get a similar network to train and run. After several hours of training, the notebook seemed to crash and after retraining- the agent appeared to learn a few things but still seemed to need to do a significant amount of exploring to learn the true q-values of different state action pairs.
 
 
 #### Conclusions
