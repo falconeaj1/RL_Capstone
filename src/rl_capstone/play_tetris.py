@@ -13,7 +13,7 @@ from rl_capstone.tetris_environment import Tetris_Env  # noqa: E402
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Play the Tetris game")
+    parser = argparse.ArgumentParser(description="Play Tetris!")
     parser.add_argument(
         "--render-mode",
         default="human",
