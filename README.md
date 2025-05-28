@@ -13,9 +13,9 @@ DeepMind has done some incredible work in the area of reinforcement learning in 
 
 #### Executive Summary
 
-This project consists of two main steps: coding and updating the actual game tetris and implementing the RL agent to try to learn optimal poicies. 
+This project consists of two main steps: coding and updating the actual game tetris and implementing the RL agent to try to learn optimal policies. 
 
-The problem statement for this project is: _Can a reinforcment agent learn to play Tetris, preferably optimally?_
+The problem statement for this project is: _Can a reinforcement agent learn to play Tetris, preferably optimally?_
 
 The main data that was acquired was sequences of potential actions and corresponding properties of the game state such as total height, bumpiness,  etc. The task of the agent was to make predictions on how well it evaluated each position in terms of future reward (clearing lines and scoring points).
 
