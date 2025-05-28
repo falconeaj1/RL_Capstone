@@ -1,6 +1,6 @@
 
 import pygame
-import figure
+from . import figure
 Figure = figure.Figure
 
 class Tetris:

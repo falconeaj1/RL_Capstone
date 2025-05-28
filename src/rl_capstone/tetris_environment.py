@@ -8,7 +8,7 @@ import pygame
 import random
 import sys
 import time
-import tetris
+from . import tetris
 import gym
 from gym import spaces
 import numpy as np
