@@ -21,6 +21,9 @@ To train a PPO agent on the simple Blob environment, execute:
 ```
 python scripts/train_ppo_blob.py --episodes 500
 ```
+
+*With limited time and patience, model did not seem to learn anything so I think there are bugs lurking in this code as this task is as simple as possible. Spent most of my time with deep q network so this was largely assisted by ChatGPT.*
+
 Models are saved in the `ppo_blob_models` directory. To watch a trained PPO
 model play:
 ```
