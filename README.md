@@ -12,12 +12,17 @@ To train the reinforcement agent on the simple Blob environment, execute:
 python scripts/train_blob.py
 ```
 
+To see model (bug in script), run:
+```
+python demo_blob.py
+```
+
 To play Tetris, execute:
 ```
 python src/rl_capstone/play_tetris.py --render-mode human
 ```
 
-The training of models was owkred on in 
+The training of models was wokred on in 
 
 
 ### Description
