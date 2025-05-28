@@ -1,4 +1,3 @@
-import random
 import numpy as np
 from PIL import Image
 import cv2
@@ -71,7 +70,6 @@ class Blob:
             
 class BlobEnv:
     SIZE = 10
-    HUMAN = False
     # MOVE_PENALTY = -1
     MOVE_CLOSER_REWARD = -1
     MOVE_FARTHER_REWARD = -2
@@ -88,7 +86,7 @@ class BlobEnv:
     ENEMY_N = 3  # enemy key in dict
     # the dict! (colors)
     # BLUE GREEN RED FOR OPEN CV SOMEREASON
-    d = {1: (255, 0, 0), # player if reversed, yellow
+    d = {1: (255, 0, 0), # player blue
          2: (0, 255, 0), # food green
          3: (0, 0, 255)} # enemy red
     episode_step = 0
@@ -99,10 +97,9 @@ class BlobEnv:
         return np.sqrt((blob_a.x-blob_b.x)**2 + (blob_a.y-blob_b.y)**2)
     
     
-    def reset(self, human = False):
+    def reset(self):
         self.player = Blob(self.SIZE)
         self.food = Blob(self.SIZE)
-        self.HUMAN = human
 
         while self.food == self.player:
             self.food = Blob(self.SIZE)
@@ -147,21 +144,21 @@ class BlobEnv:
 
             reward = self.FOOD_REWARD
         else:
-            if dist_after <= dist_before:
+            if dist_after < dist_before:
                 reward = self.MOVE_CLOSER_REWARD
                 self.good_move = True
             else:
                 reward = self.MOVE_FARTHER_REWARD
                 self.good_move = False
 
-        done = False
+        self.done = False
         if reward == self.FOOD_REWARD or reward == self.ENEMY_PENALTY or self.episode_step >= 200:
             self.done = True
 
         return new_observation, reward, self.done
 
     def render(self):
-        ep = self.episode_step
+        step = self.episode_step
         board = np.zeros((self.SIZE, self.SIZE, 3), dtype = np.uint8)
         pause = 200 # 0.05 seconds for normal movement, 
         long_pause = 1000
@@ -192,7 +189,7 @@ class BlobEnv:
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
         cv2.imshow(f"unique_title", np.array(img))  # show it!
-        cv2.setWindowTitle("unique_title", f'ep = {ep}')
+        cv2.setWindowTitle("unique_title", f'step = {step}')
         
         if self.done:
             cv2.waitKey(long_pause)
