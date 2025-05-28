@@ -5,6 +5,11 @@ Capstone Project for GA Using Reinforcement Learning
 
 Run `python blob.py` to see the demo.
 
+To train the reinforcement agent on the simple Blob environment, execute:
+```
+python scripts/train_blob.py
+```
+
 To play a quick Tetris demo, execute:
 ```
 python src/rl_capstone/play_tetris.py --render-mode human
