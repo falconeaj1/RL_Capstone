@@ -17,6 +17,16 @@ To see model (bug in script), run:
 python demo_blob.py
 ```
 
+To train a PPO agent on the simple Blob environment, execute:
+```
+python scripts/train_ppo_blob.py --episodes 500
+```
+Models are saved in the `ppo_blob_models` directory. To watch a trained PPO
+model play:
+```
+python scripts/demo_ppo_blob.py ppo_blob_models/<model_file>.keras
+```
+
 To play Tetris, execute:
 ```
 python src/rl_capstone/play_tetris.py --render-mode human
