@@ -306,7 +306,8 @@ class Tetris:
     def get_holes(self, heights): # sum of empty blocks below filled blocks
         holes = 0
         for col, height in enumerate(heights): # one height for each column
-            for row in range(1,height): # can't have a 
+            # skip row 0; holes only count beneath existing blocks
+            for row in range(1, height):
                 if self.board[self.full_height - row][col] == 0:
                     
                     holes += 1
