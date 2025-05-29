@@ -6,6 +6,7 @@ examples
     python play_blob_policy.py --model my_policy.zip        # custom file
     python play_blob_policy.py --episodes 5 --images        # 5 runs, RGB render
 """
+
 import argparse
 from stable_baselines3 import PPO
 from blob_env import BlobEnv
@@ -25,7 +26,7 @@ def main(model_path: str, episodes: int, use_images: bool):
             obs, reward, terminated, truncated, _ = env.step(action)
             total += reward
             env.render()
-        print(f"Episode {ep+1}: reward {total}")
+        print(f"Episode {ep + 1}: reward {total}")
     env.close()
 
 
