@@ -3,6 +3,19 @@ Reinforcement Learning Project
 - Tetris
 - Simple Maze Game
 
+### Setup
+
+Install dependencies with [uv](https://github.com/astral-sh/uv). The project
+provides a `uv.lock` file for reproducible installations. Running the following
+command installs the locked packages and the project itself:
+```
+uv pip install --system -e .
+```
+
+Codex disables network access after the setup phase, so place the above command
+in a `setup.sh` script to ensure packages are available when the environment goes
+offline.
+
 ### Usage
 
 Run `python blob.py` to see the maze game demo.
