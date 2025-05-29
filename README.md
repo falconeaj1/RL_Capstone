@@ -1,42 +1,48 @@
 # RL_Capstone
 Reinforcement Learning Project
-- Tetris
 - Simple Maze Game
+- Tetris
 
-### Usage
+Instructions are for running from main area of repo.
 
-Run `python blob.py` to see the maze game demo.
+## Installation
+If you don't have `uv` installed:
+### For macOS or Linux
+brew install uv
+### OR via pipx (works everywhere)
+pipx install uv
 
-To train the reinforcement agent on the simple Blob environment, execute:
-```
-python scripts/train_blob.py
-```
+### Create UV env
+uv venv .venv              # makes ./venv folder
+source .venv/bin/activate  # activate it
+uv pip install -r pyproject.toml  # install dependencies
 
-To see model (bug in script), run:
-```
-python demo_blob.py
-```
+## Blob Maze Usage
+
+Original game can be run with:
+`python src/rl_capstone/blob_maze/OLD_blob.py`
+This just randomly moves a blob that will be trained to go for green food and avoid red enemy.
+
+I spent a while to try to get blob to learn, but blob was stubborn. The following deep-q network has some bugs.
+`python scripts/train_blob.py`
+
+Using ChatGPT to help learn about proper set up, was able to get a refactored version of game with simpler graphics. Will look into matching former style.
 
 To train a PPO agent on the simple Blob environment, execute:
-```
-python scripts/train_ppo_blob.py --episodes 500
-```
+`src/rl_capstone/blob_maze/train_blob_sp3.py`
+Use `--help` to see optional flags for training.
+You can skip training and see results by running a greedy policy with:
+`src/rl_capstone/blob_maze/play_blob_policy.py`
+Use `--help` to see optional flags for playback.
 
-*With limited time and patience, model did not seem to learn anything so I think there are bugs lurking in this code as this task is as simple as possible. Spent most of my time with deep q network so this was largely assisted by ChatGPT.*
 
-Models are saved in the `ppo_blob_models` directory. To watch a trained PPO
-model play:
-```
-python scripts/demo_ppo_blob.py ppo_blob_models/<model_file>.keras
-```
-
+## Tetris
 To play Tetris, execute:
-```
-python src/rl_capstone/play_tetris.py --render-mode human
-```
+`python src/rl_capstone/play_tetris.py --render-mode human`
 
-The training of models was wokred on in 
+The training of models was wokred on in `tetris_RL.ipynb`, along with notes of progress along the way. Model has not successfully been implemented/trained and a more thorough investigation of training needs to be implemented..
 
+TODO: move progress notes into a changelog file
 
 ### Description
 
