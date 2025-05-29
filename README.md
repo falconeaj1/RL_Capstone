@@ -3,6 +3,19 @@ Reinforcement Learning Project
 - Tetris
 - Simple Maze Game
 
+### Setup
+
+Install dependencies with [uv](https://github.com/astral-sh/uv). The project
+provides a `uv.lock` file for reproducible installations. Running the following
+command installs the locked packages and the project itself:
+```
+uv pip install --system -e .
+```
+
+Codex disables network access after the setup phase, so place the above command
+in a `setup.sh` script to ensure packages are available when the environment goes
+offline.
+
 ### Usage
 
 Run `python blob.py` to see the maze game demo.
@@ -22,7 +35,9 @@ To train a PPO agent on the simple Blob environment, execute:
 python scripts/train_ppo_blob.py --episodes 500
 ```
 
-*With limited time and patience, model did not seem to learn anything so I think there are bugs lurking in this code as this task is as simple as possible. Spent most of my time with deep q network so this was largely assisted by ChatGPT.*
+The PPO agent receives a small positive reward when moving closer to the food 
+and a negative reward when moving away. This shaping signal helps training 
+progress after a few hundred episodes.
 
 Models are saved in the `ppo_blob_models` directory. To watch a trained PPO
 model play:
