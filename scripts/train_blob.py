@@ -12,7 +12,7 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 from tqdm import tqdm
 
-from rl_capstone.blob import BlobEnv
+from rl_capstone.blob_maze.OLD_blob import BlobEnv
 
 
 class ModifiedTensorBoard(TensorBoard):

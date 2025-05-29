@@ -13,6 +13,8 @@ dependencies = [
     "keras",
     "matplotlib",
     "tqdm",
+    "torch",                # PyTorch (CPU/MPS build will auto-resolve on macOS)
+    "stable-baselines3",
 ]
 
 [project.optional-dependencies]

@@ -8,7 +8,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from rl_capstone.blob import BlobEnv
+from rl_capstone.blob_maze.OLD_blob import BlobEnv
 
 
 def discount_rewards(rewards: List[float], gamma: float) -> List[float]:

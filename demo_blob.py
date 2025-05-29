@@ -1,6 +1,6 @@
 import numpy as np
 from keras.models import load_model
-from rl_capstone.blob import BlobEnv
+from rl_capstone.blob_maze.OLD_blob import BlobEnv
 
 model = load_model("models/simple____24.00max___24.00avg___24.00min__1748412714.keras")  # replace with the actual filename
 env = BlobEnv()
