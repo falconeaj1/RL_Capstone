@@ -69,7 +69,10 @@ class PPOAgent:
         _, values = self.model(states, training=False)
         values = tf.squeeze(values)
         advantages = returns - values
-
+        advantages = (advantages - tf.reduce_mean(advantages)) / (
+            tf.math.reduce_std(advantages) + 1e-8
+        )
+        
         action_onehot = tf.one_hot(actions, self.action_size)
         dataset = tf.data.Dataset.from_tensor_slices(
             (states, action_onehot, old_log_probs, returns, advantages)

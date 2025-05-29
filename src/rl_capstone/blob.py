@@ -122,10 +122,10 @@ class BlobEnv:
         #                self.food.x, self.food.y,
         #                self.enemy.x, self.enemy.y]
         observation = [
-            self.player.x - self.food.x,
-            self.player.y - self.food.y,
-            self.player.x - self.enemy.x,
-            self.player.y - self.enemy.y,
+            (self.player.x - self.food.x) / self.SIZE,
+            (self.player.y - self.food.y) / self.SIZE,
+            (self.player.x - self.enemy.x) / self.SIZE,
+            (self.player.y - self.enemy.y) / self.SIZE,
         ]
         return observation
 
@@ -142,10 +142,10 @@ class BlobEnv:
         # IMAGE RENDERING STUFF
 
         new_observation = [
-            self.player.x - self.food.x,
-            self.player.y - self.food.y,
-            self.player.x - self.enemy.x,
-            self.player.y - self.enemy.y,
+            (self.player.x - self.food.x) / self.SIZE,
+            (self.player.y - self.food.y) / self.SIZE,
+            (self.player.x - self.enemy.x) / self.SIZE,
+            (self.player.y - self.enemy.y) / self.SIZE,
         ]
         # [self.player.x, self.player.y,
         #                    self.food.x, self.food.y,
