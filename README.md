@@ -3,36 +3,27 @@ Reinforcement Learning Project
 - Simple Maze Game
 - Tetris
 
-<<<<<<< HEAD
 Instructions are for running from main area of repo.
-=======
-### Setup
+## Setup
 
-Install dependencies with [uv](https://github.com/astral-sh/uv). The project
-provides a `uv.lock` file for reproducible installations. Running the following
-command installs the locked packages and the project itself:
-```
-uv pip install --system -e .
-```
-
-Codex disables network access after the setup phase, so place the above command
-in a `setup.sh` script to ensure packages are available when the environment goes
-offline.
-
-### Usage
->>>>>>> main
-
-## Installation
+### Installation
 If you don't have `uv` installed:
 ### For macOS or Linux
 brew install uv
 ### OR via pipx (works everywhere)
 pipx install uv
+### See:
+Install dependencies with [uv](https://github.com/astral-sh/uv). The project
+provides a `uv.lock` file for reproducible installations. 
 
 ### Create UV env
+```
 uv venv .venv              # makes ./venv folder
 source .venv/bin/activate  # activate it
-uv pip install -r pyproject.toml  # install dependencies
+uv pip install --system -e . # install in editable mode for development purposes (changes instantly activated)
+```
+
+To integrate with code, environment setup is included in a `setup.sh` script for offline use.
 
 ## Blob Maze Usage
 
