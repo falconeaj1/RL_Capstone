@@ -23,7 +23,7 @@ source .venv/bin/activate  # activate it
 uv pip install --system -e . # install in editable mode for development purposes (changes instantly activated)
 ```
 
-To integrate with code, environment setup is included in a `setup.sh` script for offline use.
+To integrate with ChatGPT agent Codex, environment setup is included in a `setup.sh` script for offline use.
 
 ## Blob Maze Usage
 
