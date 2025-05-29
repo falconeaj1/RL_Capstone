@@ -28,30 +28,43 @@ To integrate with ChatGPT agent Codex, environment setup is included in a `setup
 ## Blob Maze Usage
 
 Original game can be run with:
-`python src/rl_capstone/blob_maze/OLD_blob.py`
+```
+python src/rl_capstone/blob_maze/OLD_blob.py
+```
 This just randomly moves a blob that will be trained to go for green food and avoid red enemy.
 
-I spent a while to try to get blob to learn, but blob was stubborn. The following deep-q network has some bugs.
-`python scripts/train_blob.py`
+I spent a while to try to get blob to learn, but blob was stubborn. The following deep-q network training script has some bugs/deep flaws.
+```
+python scripts/train_blob.py
+```
 
-Using ChatGPT to help learn about proper set up, was able to get a refactored version of game with simpler graphics. Will look into matching former style.
+Using ChatGPT to help learn about proper set up, was able to get a refactored version of game with simpler graphics. Will look into matching former style for visualization.
 
 To train a PPO agent on the simple Blob environment, execute:
-`src/rl_capstone/blob_maze/train_blob_sp3.py`
-Use `--help` to see optional flags for training.
-You can skip training and see results by running a greedy policy with:
-`src/rl_capstone/blob_maze/play_blob_policy.py`
-Use `--help` to see optional flags for playback.
+```
+python src/rl_capstone/blob_maze/train_blob_sp3.py
+```
 
-The PPO agent receives a small positive reward when moving closer to the food 
-and a negative reward when moving away. Main trained model is aved at `ppo_blob_policy.zip`
+Use `--help` to see optional flags for training.
+
+You can skip training and see results by running a greedy policy with:
+```
+python src/rl_capstone/blob_maze/play_blob_policy.py
+```
+
+Use `--help` to see optional flags for this playback script.
+
+The PPO agent receives a small positive reward when moving closer to the food and a negative reward when moving away. Main trained model is saved at `ppo_blob_policy.zip`
+
 TODO: blob model needs moved to better spot
 
 ## Tetris
 To play Tetris, execute:
-`python src/rl_capstone/play_tetris.py --render-mode human`
+```
+python src/rl_capstone/play_tetris.py --render-mode human
+```
 
-The training of models was wokred on in `tetris_RL.ipynb`, along with notes of progress along the way. Model has not successfully been implemented/trained and a more thorough investigation of training needs to be implemented..
+The training of models was worked on in `tetris_RL.ipynb`, along with notes of progress along the way. Model has not successfully been implemented/trained and a more thorough investigation of training needs to be implemented..
 
 TODO: move progress notes into a changelog file
 
