@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from keras.models import load_model
 
-from rl_capstone.blob import BlobEnv
+from rl_capstone.blob_maze.OLD_blob import BlobEnv
 
 
 def main(model_path: str) -> None:

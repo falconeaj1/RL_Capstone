@@ -8,7 +8,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from rl_capstone.blob import BlobEnv
+from rl_capstone.blob_maze.OLD_blob import BlobEnv
 
 
 def discount_rewards(rewards: List[float], gamma: float) -> List[float]:
@@ -69,30 +69,22 @@ class PPOAgent:
         _, values = self.model(states, training=False)
         values = tf.squeeze(values)
         advantages = returns - values
-        advantages = (advantages - tf.reduce_mean(advantages)) / (
-            tf.math.reduce_std(advantages) + 1e-8
-        )
-        
+        advantages = (advantages - tf.reduce_mean(advantages)) / (tf.math.reduce_std(advantages) + 1e-8)
+
         action_onehot = tf.one_hot(actions, self.action_size)
-        dataset = tf.data.Dataset.from_tensor_slices(
-            (states, action_onehot, old_log_probs, returns, advantages)
-        ).batch(len(states))
+        dataset = tf.data.Dataset.from_tensor_slices((states, action_onehot, old_log_probs, returns, advantages)).batch(
+            len(states)
+        )
 
         for _ in range(self.update_epochs):
             for batch_states, batch_actions, batch_old_log, batch_returns, batch_adv in dataset:
                 with tf.GradientTape() as tape:
                     probs, values = self.model(batch_states, training=True)
                     values = tf.squeeze(values)
-                    new_log = tf.math.log(
-                        tf.reduce_sum(probs * batch_actions, axis=1) + 1e-8
-                    )
+                    new_log = tf.math.log(tf.reduce_sum(probs * batch_actions, axis=1) + 1e-8)
                     ratio = tf.exp(new_log - batch_old_log)
-                    clipped = tf.clip_by_value(
-                        ratio, 1.0 - self.clip_ratio, 1.0 + self.clip_ratio
-                    )
-                    policy_loss = -tf.reduce_mean(
-                        tf.minimum(ratio * batch_adv, clipped * batch_adv)
-                    )
+                    clipped = tf.clip_by_value(ratio, 1.0 - self.clip_ratio, 1.0 + self.clip_ratio)
+                    policy_loss = -tf.reduce_mean(tf.minimum(ratio * batch_adv, clipped * batch_adv))
                     value_loss = tf.reduce_mean((batch_returns - values) ** 2)
                     loss = policy_loss + 0.5 * value_loss
                 grads = tape.gradient(loss, self.model.trainable_variables)

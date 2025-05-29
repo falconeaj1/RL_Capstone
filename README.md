@@ -1,57 +1,72 @@
 # RL_Capstone
 Reinforcement Learning Project
-- Tetris
 - Simple Maze Game
+- Tetris
 
-### Setup
+Instructions are for running from main area of repo.
+## Setup
 
+### Installation
+If you don't have `uv` installed:
+### For macOS or Linux
+brew install uv
+### OR via pipx (works everywhere)
+pipx install uv
+### See:
 Install dependencies with [uv](https://github.com/astral-sh/uv). The project
-provides a `uv.lock` file for reproducible installations. Running the following
-command installs the locked packages and the project itself:
+provides a `uv.lock` file for reproducible installations. 
+
+### Create UV env
 ```
-uv pip install --system -e .
+uv venv .venv              # makes ./venv folder
+source .venv/bin/activate  # activate it
+uv pip install --system -e . # install in editable mode for development purposes (changes instantly activated)
 ```
 
-Codex disables network access after the setup phase, so place the above command
-in a `setup.sh` script to ensure packages are available when the environment goes
-offline.
+To integrate with ChatGPT agent Codex, environment setup is included in a `setup.sh` script for offline use.
 
-### Usage
+## Blob Maze Usage
 
-Run `python blob.py` to see the maze game demo.
+Original game can be run with:
+```
+python src/rl_capstone/blob_maze/OLD_blob.py
+```
+This just randomly moves a blob that will be trained to go for green food and avoid red enemy.
 
-To train the reinforcement agent on the simple Blob environment, execute:
+I spent a while to try to get blob to learn, but blob was stubborn. The following deep-q network training script has some bugs/deep flaws.
 ```
 python scripts/train_blob.py
 ```
 
-To see model (bug in script), run:
-```
-python demo_blob.py
-```
+Using ChatGPT to help learn about proper set up, was able to get a refactored version of game with simpler graphics. Will look into matching former style for visualization.
 
 To train a PPO agent on the simple Blob environment, execute:
 ```
-python scripts/train_ppo_blob.py --episodes 500
+python src/rl_capstone/blob_maze/train_blob_sp3.py
 ```
 
-The PPO agent receives a small positive reward when moving closer to the food 
-and a negative reward when moving away. This shaping signal helps training 
-progress after a few hundred episodes.
+Use `--help` to see optional flags for training.
 
-Models are saved in the `ppo_blob_models` directory. To watch a trained PPO
-model play:
+You can skip training and see results by running a greedy policy with:
 ```
-python scripts/demo_ppo_blob.py ppo_blob_models/<model_file>.keras
+python src/rl_capstone/blob_maze/play_blob_policy.py
 ```
 
+Use `--help` to see optional flags for this playback script.
+
+The PPO agent receives a small positive reward when moving closer to the food and a negative reward when moving away. Main trained model is saved at `ppo_blob_policy.zip`
+
+TODO: blob model needs moved to better spot
+
+## Tetris
 To play Tetris, execute:
 ```
 python src/rl_capstone/play_tetris.py --render-mode human
 ```
 
-The training of models was wokred on in 
+The training of models was worked on in `tetris_RL.ipynb`, along with notes of progress along the way. Model has not successfully been implemented/trained and a more thorough investigation of training needs to be implemented..
 
+TODO: move progress notes into a changelog file
 
 ### Description
 
