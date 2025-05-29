@@ -3,7 +3,24 @@ Reinforcement Learning Project
 - Simple Maze Game
 - Tetris
 
+<<<<<<< HEAD
 Instructions are for running from main area of repo.
+=======
+### Setup
+
+Install dependencies with [uv](https://github.com/astral-sh/uv). The project
+provides a `uv.lock` file for reproducible installations. Running the following
+command installs the locked packages and the project itself:
+```
+uv pip install --system -e .
+```
+
+Codex disables network access after the setup phase, so place the above command
+in a `setup.sh` script to ensure packages are available when the environment goes
+offline.
+
+### Usage
+>>>>>>> main
 
 ## Installation
 If you don't have `uv` installed:
@@ -35,6 +52,9 @@ You can skip training and see results by running a greedy policy with:
 `src/rl_capstone/blob_maze/play_blob_policy.py`
 Use `--help` to see optional flags for playback.
 
+The PPO agent receives a small positive reward when moving closer to the food 
+and a negative reward when moving away. Main trained model is aved at `ppo_blob_policy.zip`
+TODO: blob model needs moved to better spot
 
 ## Tetris
 To play Tetris, execute:

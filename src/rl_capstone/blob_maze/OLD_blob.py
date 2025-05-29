@@ -78,8 +78,10 @@ class Blob:
 class BlobEnv:
     SIZE = 10
     # MOVE_PENALTY = -1
-    MOVE_CLOSER_REWARD = -1
-    MOVE_FARTHER_REWARD = -2
+    # Provide positive feedback for moving toward the food so PPO
+    # has a clearer gradient signal during training.
+    MOVE_CLOSER_REWARD = 1
+    MOVE_FARTHER_REWARD = -1
     ENEMY_PENALTY = -300
     FOOD_REWARD = 25
     good_move = False
@@ -120,10 +122,10 @@ class BlobEnv:
         #                self.food.x, self.food.y,
         #                self.enemy.x, self.enemy.y]
         observation = [
-            self.player.x - self.food.x,
-            self.player.y - self.food.y,
-            self.player.x - self.enemy.x,
-            self.player.y - self.enemy.y,
+            (self.player.x - self.food.x) / self.SIZE,
+            (self.player.y - self.food.y) / self.SIZE,
+            (self.player.x - self.enemy.x) / self.SIZE,
+            (self.player.y - self.enemy.y) / self.SIZE,
         ]
         return observation
 
@@ -140,10 +142,10 @@ class BlobEnv:
         # IMAGE RENDERING STUFF
 
         new_observation = [
-            self.player.x - self.food.x,
-            self.player.y - self.food.y,
-            self.player.x - self.enemy.x,
-            self.player.y - self.enemy.y,
+            (self.player.x - self.food.x) / self.SIZE,
+            (self.player.y - self.food.y) / self.SIZE,
+            (self.player.x - self.enemy.x) / self.SIZE,
+            (self.player.y - self.enemy.y) / self.SIZE,
         ]
         # [self.player.x, self.player.y,
         #                    self.food.x, self.food.y,
